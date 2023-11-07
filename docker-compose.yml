@@ -4,6 +4,24 @@ volumes:
   express_node_modules:
 
 services:
+  mariadb:
+    image: "mariadb:latest"
+    container_name: "mariadb"
+    working_dir: "/docker-entrypoint-initdb.d"
+    volumes:
+      - ./mariadb/:/docker-entrypoint-initdb.d
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    healthcheck: # TODO check more in detail what healthcheck times does (start_period, interval etc.)
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: 
+        "always"
+
+# TODO add healthcheck and to test if server is up, if wanting to start python scrip automaticlly
   express:
     image: "bike-brain-express"
     container_name: "express"
@@ -15,6 +33,9 @@ services:
     ports:
       - "1337:1337"
     command: npm run dev
+    depends_on:
+      mariadb:
+        condition: service_healthy
     restart:
         "on-failure"
 
@@ -25,6 +46,8 @@ services:
     working_dir: "/bike/app"
     volumes:
       - "./bike/app/:/bike/app"
-    restart:
-        "on-failure"
-    command: python app.py
+    links:
+      - "express:express-server"
+    depends_on:
+      express:
+        condition: service_started
