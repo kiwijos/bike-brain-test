@@ -1,0 +1,30 @@
+version: "3.8"
+
+volumes:
+  express_node_modules:
+
+services:
+  express:
+    image: "bike-brain-express"
+    container_name: "express"
+    build: "./server"
+    working_dir: "/express/app"
+    volumes:
+      - "./server/app/:/express/app"
+      - "express_node_modules:/express/app/node_modules"
+    ports:
+      - "1337:1337"
+    command: npm run dev
+    restart:
+        "on-failure"
+
+  python:
+    image: "bike-brain-python"
+    container_name: "bike-python"
+    build: "./bike"
+    working_dir: "/bike/app"
+    volumes:
+      - "./bike/app/:/bike/app"
+    restart:
+        "on-failure"
+    command: python app.py
