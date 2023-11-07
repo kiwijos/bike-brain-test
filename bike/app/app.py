@@ -7,14 +7,6 @@ import requests
 
 url = "http://express-server:1337"
 
-def get_data(api):
-        response = requests.get(f"{api}")
-        if response.status_code == 200:
-            data = response.json()
-            print(data)
-        else:
-            print(f"Hello person, there's a {response.status_code} error with your request")
-
 def insert_data(api, id):
         data = {
             "city_id": id,
@@ -27,12 +19,11 @@ def insert_data(api, id):
         else:
             print(f"Hello person, there's a {response.status_code} error with your request")
 
-
 test = 0
 
 while test < 10:
     insert_data(url, test)
     test += 1
-    time.sleep(1)
+    time.sleep(5)
 
 print("slut")

@@ -21,12 +21,16 @@ services:
     restart: 
         "always"
 
-# TODO add healthcheck and to test if server is up, if wanting to start python scrip automaticlly
   express:
     image: "bike-brain-express"
     container_name: "express"
     build: "./server"
     working_dir: "/express/app"
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
     volumes:
       - "./server/app/:/express/app"
       - "express_node_modules:/express/app/node_modules"
@@ -48,6 +52,7 @@ services:
       - "./bike/app/:/bike/app"
     links:
       - "express:express-server"
+    command: python app.py
     depends_on:
       express:
-        condition: service_started
+        condition: service_healthy

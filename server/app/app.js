@@ -8,6 +8,14 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', async (req, res) => {
+    res.json({
+        data: {
+            msg: "Hello World! This is the root."
+        }
+    });
+})
+
+app.get('/get', async (req, res) => {
     const result = await dbModel.getData(dbModel.queries.getBike)
 
     res.json(result)
