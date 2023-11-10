@@ -32,4 +32,4 @@ for trip in data['trips']:
         }
         update_bike_data(url, data_to_send)
         
-        time.sleep(5)
+        time.sleep(10)
