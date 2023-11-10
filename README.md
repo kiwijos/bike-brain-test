@@ -17,11 +17,18 @@ Sedan startar mariadb, där en heathcheck görs så att inte express containern 
 
 Sedan startar express servern. Även där görs en healthcheck på ett liknande sätt som ovan, så att inte nästa container går igång före servern är uppe och snurrar. Sidan har url http://localhost:1337/, där det bara visar att servern är igång. Routen '/get' hämtar data från tabellen 'bike' i databasen som är tom från start.
 
-Sedan körs sista container igång, vilket i sin tur gör 10 POST-request till servern med data med en 5 sekunders intervall (som en cykel som skickar sin position).
+Sedan körs sista container igång, vilket i sin tur loopar igenom trips och dess koordinater med 10 sekunders intervall. För att se det på en karta, starta igång en python server i mappen simple_map med:
 
-Man kan sen se reslutatet i webbläsaren på routen '/get', och gör man det samtidigt som scriptet körs så hämtar ju då den det som finns i databasen vid den requesten.
+```
+# Stå i simple_map
+python3 -m http.server 5000
+```
 
-Stäng ner nätverket.
+Man kan då se kartan och dess markörer i http://localhost:5000.
+
+Man kan också koppla upp sig och få den data som skickas ut i webbläsaren på http://localhost:1337/eventsource.
+
+För att stänga ner nätverket.
 ```
 docker-compose down -v
 ```
