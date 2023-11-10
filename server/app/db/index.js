@@ -7,7 +7,7 @@ const pool = mariadb.createPool({
     // connectionLimit: 5
 });
 
-const createBike = "INSERT INTO bike (city_id, geometry) VALUES (?, ?);"
+const updateBike = "UPDATE bike SET geometry = ? WHERE id = ?;"
 const getBike = "SELECT * FROM bike;"
 
 async function getData(sqlQuery, args=[]) {
@@ -64,6 +64,6 @@ module.exports = {
     createData,
     queries: {
         getBike,
-        createBike
+        updateBike
     }
 }

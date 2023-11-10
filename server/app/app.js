@@ -7,6 +7,9 @@ const dbModel = require('./db/index');
 app.use(cors());
 app.use(express.json());
 
+// Used for having multiple clients connect to /eventsource
+let clients = [];
+
 app.get('/', async (req, res) => {
     res.json({
         data: {
@@ -14,6 +17,22 @@ app.get('/', async (req, res) => {
         }
     });
 })
+
+app.get('/eventsource', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+
+    // Add this client to the clients array
+    clients.push(res);
+
+    // Handle client disconnection
+    req.on('close', () => {
+        clients = clients.filter(client => client !== res);
+    });
+    
+});
 
 app.get('/get', async (req, res) => {
     const result = await dbModel.getData(dbModel.queries.getBike)
@@ -23,9 +42,7 @@ app.get('/get', async (req, res) => {
 
 app.post('/update', async (req, res) => {
     const data = req.body;
-    const date = new Date();
-    const time = date.toLocaleString('se-SE', { timeZone: 'Europe/Stockholm' })
-    const result = await dbModel.createData(dbModel.queries.createBike, [data.city_id, time])
+    const result = await dbModel.updateData(dbModel.queries.updateBike, [data.geometry, data.id])
 
     let response = {
         data: {
@@ -37,6 +54,11 @@ app.post('/update', async (req, res) => {
         response.data = {
             errors: "all is NOT good"
         }
+    } else {
+        // Send data to all connected clients
+        clients.forEach(client => {
+            client.write(`data: ${JSON.stringify(data)}\n\n`);
+        });
     }
 
     res.json(response)
