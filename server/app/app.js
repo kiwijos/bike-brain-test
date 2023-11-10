@@ -4,7 +4,12 @@ const port = 1337;
 const cors = require('cors');
 const dbModel = require('./db/index');
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5000',
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Used for having multiple clients connect to /eventsource
