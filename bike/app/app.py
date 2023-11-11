@@ -2,34 +2,53 @@
 #
 #
 
-import time
-import requests
+import os
 import json
+import asyncio
+import aiohttp
 
-url = "http://express-server:1337"
-# url = "http://localhost:1337"
+# url = "http://express-server:1337"
+url = "http://localhost:1337"
 
-
-file = open('./routes/1.json')
+file = open('./routes/2.json')
 
 data = json.load(file)
 
-def update_bike_data(api, data):
-        response = requests.post(f"{api}/update", json=data)
-
+async def update_bike_data_async(session, api, data):
+    async with session.post(f"{api}/update", json=data) as response:
         print(response)
-
-        if response.status_code == 200:
-            print(response.json())
+        if response.status == 200:
+            response_data = await response.json()
+            print(response_data)
         else:
-            print(f"Errorcode: {response.status_code}")
+            print(f"Errorcode: {response.status}")
 
-for trip in data['trips']:
-    for position in trip:
-        data_to_send = {
-            "id": "GOGOGO",
-            "geometry": json.dumps(position)
-        }
-        update_bike_data(url, data_to_send)
-        
-        time.sleep(10)
+async def process_trip(session, url, simulation):
+    for trip in simulation['trips']:
+        for position in trip:
+            data_to_send = {
+                "id": "GOGOGO",
+                "geometry": position
+            }
+            await update_bike_data_async(session, url, data_to_send)
+            await asyncio.sleep(2)
+
+def load_json_from_directory(directory):
+    data = []
+    for filename in os.listdir(directory):
+        if filename.endswith('.json'):
+            filepath = os.path.join(directory, filename)
+            with open(filepath, 'r') as file:
+                data.append(json.load(file))
+    return data
+
+async def main(data):
+    async with aiohttp.ClientSession() as session:
+        tasks = [asyncio.create_task(process_trip(session, url, simulation)) for simulation in data]
+        await asyncio.gather(*tasks)
+
+if __name__ == "__main__":
+    directory = './routes'
+    json_data = load_json_from_directory(directory)
+
+    asyncio.run(main(json_data))

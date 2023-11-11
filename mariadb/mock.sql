@@ -15,7 +15,7 @@ CREATE TABLE `bike`(
     `id` VARCHAR(6) NOT NULL,
     `city_id` VARCHAR(10) NOT NULL,
     `status_id` INT NOT NULL,
-    `geometry` VARCHAR(100) NOT NULL,
+    `geometry` VARCHAR(150) NOT NULL,
 
     PRIMARY KEY (`id`)
 );

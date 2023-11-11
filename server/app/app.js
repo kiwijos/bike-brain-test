@@ -3,6 +3,7 @@ const app = express();
 const port = 1337;
 const cors = require('cors');
 const dbModel = require('./db/index');
+const GeoJson = require('geojson');
 
 const corsOptions = {
     origin: 'http://localhost:5000',
@@ -47,7 +48,16 @@ app.get('/get', async (req, res) => {
 
 app.post('/update', async (req, res) => {
     const data = req.body;
-    const result = await dbModel.updateData(dbModel.queries.updateBike, [data.geometry, data.id])
+    const jsonPoint = GeoJson.parse({
+        lat: data.geometry[0],
+        lng: data.geometry[1]
+    },
+    {
+        Point: ['lat', 'lng']
+    })
+    const asString = JSON.stringify(jsonPoint);
+
+    const result = await dbModel.updateData(dbModel.queries.updateBike, [asString, data.id])
 
     let response = {
         data: {
@@ -62,7 +72,7 @@ app.post('/update', async (req, res) => {
     } else {
         // Send data to all connected clients
         clients.forEach(client => {
-            client.write(`data: ${JSON.stringify(data)}\n\n`);
+            client.write(`data: ${asString}\n\n`);
         });
     }
 

@@ -20,10 +20,8 @@ function renderMainView() {
 
     evtSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        const position = JSON.parse(data.geometry);
-        const revPos = [position[1], position[0]];
 
-        L.marker(revPos).addTo(map);
+        L.marker(data.geometry.coordinates).addTo(map);
     }
 
 }
