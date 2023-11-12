@@ -23,5 +23,9 @@ CREATE TABLE `bike`(
 INSERT INTO `bike`
     (`id`, `city_id`, `status_id`, `geometry`)
 VALUES
-    ('GOGOGO', 2, 1, '[18.02393, 59.33854]')
+    ('GOGOGO', 2, 1, '...'),
+    ('REG123', 2, 1, '...'),
+    ('123REG', 2, 1, '...'),
+    ('HEJHEJ', 2, 1, '...'),
+    ('TEST12', 2, 1, '...')
 ;

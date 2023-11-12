@@ -6,32 +6,10 @@ import os
 import json
 import asyncio
 import aiohttp
+from src.bike import Bike
 
-# url = "http://express-server:1337"
-url = "http://localhost:1337"
-
-file = open('./routes/2.json')
-
-data = json.load(file)
-
-async def update_bike_data_async(session, api, data):
-    async with session.post(f"{api}/update", json=data) as response:
-        print(response)
-        if response.status == 200:
-            response_data = await response.json()
-            print(response_data)
-        else:
-            print(f"Errorcode: {response.status}")
-
-async def process_trip(session, url, simulation):
-    for trip in simulation['trips']:
-        for position in trip:
-            data_to_send = {
-                "id": "GOGOGO",
-                "geometry": position
-            }
-            await update_bike_data_async(session, url, data_to_send)
-            await asyncio.sleep(2)
+url = "http://express-server:1337"
+# url = "http://localhost:1337"
 
 def load_json_from_directory(directory):
     data = []
@@ -43,8 +21,20 @@ def load_json_from_directory(directory):
     return data
 
 async def main(data):
+    bike_id = [
+        'GOGOGO',
+        'REG123',
+        '123REG',
+        'HEJHEJ',
+        'TEST12'
+    ]
+    bikes = []
+
+    for i, id in enumerate(bike_id):
+        bikes.append(Bike(id, data[i]))
+
     async with aiohttp.ClientSession() as session:
-        tasks = [asyncio.create_task(process_trip(session, url, simulation)) for simulation in data]
+        tasks = [asyncio.create_task(bike.start_simulation(url, session)) for bike in bikes]
         await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
