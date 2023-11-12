@@ -56,3 +56,18 @@ services:
     depends_on:
       express:
         condition: service_healthy
+
+  web-client:
+    image: "simple-map"
+    container_name: "simple-map"
+    build: "./simple_map"
+    working_dir: "/usr/share/nginx/html/"
+    volumes:
+      - "./simple_map/src/:/usr/share/nginx/html/"
+    ports:
+      - "5000:80"
+    links:
+      - "express:express-server"
+    depends_on:
+      express:
+        condition: service_healthy

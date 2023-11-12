@@ -1,5 +1,5 @@
 function renderMainView() {
-    const evtSource = new EventSource("//localhost:1337/eventsource", {
+    const evtSource = new EventSource("http://localhost:1337/eventsource", {
         withCredentials: true,
     });
 
@@ -18,11 +18,27 @@ function renderMainView() {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    let markers = {};
+
     evtSource.onmessage = function(event) {
         const data = JSON.parse(event.data);
+        let marker;
 
-        L.marker(data.geometry.coordinates).addTo(map);
+        if (data.id in markers) {
+            marker = markers[data.id];
+            marker.setLatLng(data.geoJSON.geometry.coordinates)
+        } else {
+            marker = L.marker(data.geoJSON.geometry.coordinates);
+            markers[data.id] = marker;
+            marker.addTo(map);
+        }
+
+
     }
+
+    evtSource.onerror = function(event) {
+        console.error("EventSource failed:", event);
+    };
 
 }
 

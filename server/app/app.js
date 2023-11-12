@@ -71,8 +71,13 @@ app.post('/update', async (req, res) => {
         }
     } else {
         // Send data to all connected clients
+        const eventData = {
+            id: data.id,
+            geoJSON: jsonPoint
+        }
+        // JSON.stringify(eventData)
         clients.forEach(client => {
-            client.write(`data: ${asString}\n\n`);
+            client.write(`data: ${JSON.stringify(eventData)}\n\n`);
         });
     }
 
