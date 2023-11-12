@@ -56,6 +56,8 @@ services:
     depends_on:
       express:
         condition: service_healthy
+    restart:
+      "on-failure"
 
   web-client:
     image: "simple-map"
@@ -71,3 +73,5 @@ services:
     depends_on:
       express:
         condition: service_healthy
+    restart:
+      "on-failure"
