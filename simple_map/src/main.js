@@ -11,7 +11,7 @@ function renderMainView() {
 
     container.innerHTML = `<div id="map" class="map"></div>`;
 
-    const map = L.map('map').setView([59.35, 18.03054925199988], 13);
+    const map = L.map('map').setView([59.35, 15.83054925199988], 9);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
