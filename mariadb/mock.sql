@@ -12,7 +12,7 @@ USE `test`;
 DROP TABLE IF EXISTS `bike`;
 
 CREATE TABLE `bike`(
-    `id` VARCHAR(6) NOT NULL,
+    `id` INT NOT NULL,
     `city_id` VARCHAR(10) NOT NULL,
     `status_id` INT NOT NULL,
     `geometry` VARCHAR(150) NOT NULL,
@@ -23,9 +23,9 @@ CREATE TABLE `bike`(
 INSERT INTO `bike`
     (`id`, `city_id`, `status_id`, `geometry`)
 VALUES
-    ('GOGOGO', 2, 1, '...'),
-    ('REG123', 2, 1, '...'),
-    ('123REG', 2, 1, '...'),
-    ('HEJHEJ', 2, 1, '...'),
-    ('TEST12', 2, 1, '...')
+    (1, 2, 1, '...'),
+    (2, 2, 1, '...'),
+    (3, 2, 1, '...'),
+    (4, 2, 1, '...'),
+    (5, 2, 1, '...')
 ;

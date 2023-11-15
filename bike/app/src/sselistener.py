@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Bike module
+SSE listener class
 """
 import threading
 import json
@@ -10,7 +10,7 @@ class SSEListener():
     """
     Class for listening to events
     """
-    URL = "http://localhost:1337/eventsource"
+    URL = "http://express-server:1337/bikes/instructions"
 
     def __init__(self, bike_instance):
         self._bike = bike_instance
@@ -21,6 +21,13 @@ class SSEListener():
         try:
             for event in SSEClient(self.URL):
                 data = json.loads(event.data)
-                print(data['id'])
+                
+                if 'msg' in data and data['msg'] == 'start_simulation':
+                    self._bike.stop()
+                    self._bike.run_simulation()
+    
+                if data['id'] == self._bike.id():
+                    print(self._bike.get_data())
+
         except Exception as e:
             print(f"Error in SSE connection: {e}")

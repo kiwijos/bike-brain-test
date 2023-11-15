@@ -33,6 +33,16 @@ p {
     display: flex;
 }
 
+.start-button {
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    height: 64px;
+    background-color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
 .delayed {
     height: 100vh;
     width: 40vw;

@@ -1,5 +1,5 @@
 function renderMainView() {
-    const evtSource = new EventSource("http://localhost:1337/eventsource", {
+    const evtSource = new EventSource("http://localhost:1337/bikes/feed", {
         withCredentials: true,
     });
 
@@ -11,7 +11,7 @@ function renderMainView() {
 
     container.innerHTML = `<div id="map" class="map"></div>`;
 
-    const map = L.map('map').setView([62.173276, 14.942265], 5);
+    const map = L.map('map').setView([59.35, 18.03054925199988], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -32,14 +32,20 @@ function renderMainView() {
             markers[data.id] = marker;
             marker.addTo(map);
         }
-
-
     }
 
     evtSource.onerror = function(event) {
         console.error("EventSource failed:", event);
     };
-
+    
+    const btn = document.createElement('button');
+    btn.className = 'start-button';
+    btn.innerText = "Starta simulering";
+    btn.onclick = () => {
+        const result = fetch("http://localhost:1337/bikes/simulate");
+        console.log(result);
+    }
+    container.appendChild(btn)
 }
 
 renderMainView();
