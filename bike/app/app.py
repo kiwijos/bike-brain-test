@@ -21,17 +21,10 @@ def load_json_from_directory(directory):
     return data
 
 async def main(data):
-    bike_id = [
-        'GOGOGO',
-        'REG123',
-        '123REG',
-        'HEJHEJ',
-        'TEST12'
-    ]
     bikes = []
 
-    for i, id in enumerate(bike_id):
-        bikes.append(Bike(id, data[i]))
+    for id in range(1, 6):
+        bikes.append(Bike(id, data[id-1]))
 
     async with aiohttp.ClientSession() as session:
         tasks = [asyncio.create_task(bike.start_simulation(url, session)) for bike in bikes]
